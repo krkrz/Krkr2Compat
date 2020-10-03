@@ -143,8 +143,9 @@ class Krkr2CompatUtils {
 				(@"property ${key} { getter { return typeof this.${prefix}${key} != 'undefined' ? this.${prefix}${key} : ${value}; }" +
 				 @"setter(v) { this.${prefix}${key} = v;"
 				 @if (! K2COMPAT_PURGE_DUMMYPROP_LOG)
-				 + @"global.Debug.message('Krkr2CompatUtils: dummy property ${key} set', v, Scripts.getTraceString()); } }"
+				 + @"global.Debug.message('Krkr2CompatUtils: dummy property ${key} set', v, Scripts.getTraceString());"
 				 @endif
+				 +  "} }"
 				 )!;
 			} incontextof cls)(key, value, "_k2compat_");
 		}
