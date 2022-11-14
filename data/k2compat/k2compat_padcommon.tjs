@@ -315,7 +315,7 @@ class        DebugPadCompatDialog extends TextContentModelessDialog {
 	function getStatusText() { return _showStatusBar ? (string)_statusText : ""; }
 
 	function _updateStatusText() {
-		if (_visible) setItemText(_lineName, getStatusTex());
+		if (_visible) setItemText(_lineName, getStatusText());
 	}
 
 	//-------------------------------------------------------------
