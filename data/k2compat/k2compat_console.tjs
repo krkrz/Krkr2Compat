@@ -127,7 +127,9 @@ class        DebugConsoleCompatDialog extends DebugPadCompatDialog {
 		}
 		if (sz > 0) {
 			var sztext = /*CBEMAXSTRLEN*/260 * sz;
-			var iWhy = nm.getDWord(/*NMHDR hdr*/4*3 + /*bool fChanged*/4+ /*int iNewSelection*/4+ sztext);
+			var szHdr = (System.exeBits == 32) ? (4 * 3) : (8 + 4 * 2);
+			var szPadding = (System.exeBits == 32) ? 0 : 4;
+			var iWhy = nm.getDWord(/*NMHDR hdr*/szHdr + /*bool fChanged*/4+ szPadding +/*int iNewSelection*/4+ szPadding + sztext);
 			if (iWhy == /*CBENF_RETURN*/2) {
 				onExecute();
 			}
@@ -155,12 +157,22 @@ class        DebugConsoleCompatDialog extends DebugPadCompatDialog {
 	}
 	function addComboBoxText(id, str) {
 		// CBEM_INSERTITEMW用構造体をBlobで作成orz
-		var sz = 4*9;
-		var blob = new global.WIN32Dialog.Blob(sz);
-		blob.setDWord(/*mask*/0, /*CBEIF_TEXT*/1);
-		blob.setDWord(/*iItem*/4, -1);
-		blob.setText (/*pszText*/8, str);
-		blob.setDWord(/*pszText*/12, str.length);
+		var blob;
+		if (System.exeBits == 32) {
+			var sz = 4*9;
+			blob = new global.WIN32Dialog.Blob(sz);
+			blob.setDWord(/*mask*/0, /*CBEIF_TEXT*/1);
+			blob.setDWord(/*iItem*/4, -1);
+			blob.setText (/*pszText*/8, str);
+			blob.setDWord(/*pszText*/12, str.length);
+		} else {
+			var sz = 72;
+			blob = new global.WIN32Dialog.Blob(sz);
+			blob.setDWord(/*mask*/0, /*CBEIF_TEXT*/1);
+			blob.setDWordLong(/*iItem*/8, -1);
+			blob.setText (/*pszText*/16, str);
+			blob.setDWord(/*pszText*/24, str.length);
+		}
 		var idx = sendItemMessage(id, CBEM_INSERTITEMW, 0, blob.pointer);
 		invalidate blob;
 		return idx;
