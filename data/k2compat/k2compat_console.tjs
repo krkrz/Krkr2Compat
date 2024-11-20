@@ -49,7 +49,7 @@ class        DebugConsoleCompatDialog extends DebugPadCompatDialog {
 
 	// LoggingHandler callback
 	function onLog(line) {
-		if (!isvalid this) return;
+		if (!isvalid this || ! this.isValid) return;
 
 		// 行数上限対応
 		_textLogs.add(line);
@@ -71,7 +71,7 @@ class        DebugConsoleCompatDialog extends DebugPadCompatDialog {
 		if (_visible) kickAsyncTrigger("onUpdateLog");
 	}
 	function onUpdateLog {
-		if (!isvalid this || !_visible) return;
+		if (!isvalid this || ! this.isValid || !_visible) return;
 		lockItemUpdate(0);
 		try {
 			setItemText    (_editID, _textLogs.join("\n").replace(/[\r]?\n/g, "\r\n")); // [TOOD]もっとスマートな方法があれば…
@@ -182,7 +182,7 @@ class        DebugConsoleCompatDialog extends DebugPadCompatDialog {
 
 	function _updateStatusText() {}
 	function onExecute {
-		if (!isvalid this) return;
+		if (!isvalid this || ! this.isValid) return;
 		var _toString = Krkr2CompatUtils.toString;
 		var result, eval = ((string)getItemText(_lineName)).trim();
 		var store;
